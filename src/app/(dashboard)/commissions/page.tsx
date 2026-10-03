@@ -1,0 +1,103 @@
+'use client'
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { DataTable } from '@/components/data-table/data-table'
+import { Spinner } from '@/components/ui/spinner'
+import { useSalesPayout } from '@/features/commissions'
+
+interface PayoutFilter {
+  salesId?: number
+  month?: string
+}
+
+export default function CommissionsPage() {
+  const [selectedSalesId, setSelectedSalesId] = useState<number | undefined>(undefined)
+
+  const { data: payout, isLoading } = useSalesPayout(selectedSalesId)
+
+  const handleViewPayout = (salesId: number) => {
+    setSelectedSalesId(salesId)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-40">
+        <Spinner />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Commission Payouts</h1>
+          <p className="text-muted-foreground mt-2">View and manage commission calculations for sales personnel</p>
+        </div>
+
+        {!selectedSalesId ? (
+          <div className="bg-white rounded-lg border p-6">
+            <p className="text-muted-foreground mb-4">Select a sales person to view their commission breakdown</p>
+            <div className="space-y-2">
+              <Button onClick={() => handleViewPayout(1)}>View Sample Sales Person 1</Button>
+              <Button onClick={() => handleViewPayout(2)} variant="outline">
+                View Sample Sales Person 2
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <Button onClick={() => setSelectedSalesId(undefined)} variant="outline">
+              ← Back to Selection
+            </Button>
+
+            {payout && (
+              <div className="bg-white rounded-lg border overflow-hidden">
+                <div className="p-6 border-b bg-gray-50">
+                  <h2 className="text-xl font-semibold">Sales ID: {payout.sales_id}</h2>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground">Total Units</p>
+                      <p className="text-2xl font-bold">{payout.total_units}</p>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground">Total Revenue</p>
+                      <p className="text-2xl font-bold">Rp {payout.total_revenue?.toLocaleString('id-ID') || 0}</p>
+                    </div>
+                    <div className="bg-purple-50 rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground">Payout</p>
+                      <p className="text-2xl font-bold">Rp {payout.payout?.toLocaleString('id-ID') || 0}</p>
+                    </div>
+                  </div>
+
+                  {payout.breakdown && payout.breakdown.length > 0 && (
+                    <div className="mt-6">
+                      <h3 className="font-semibold mb-3">Commission Breakdown by Tier</h3>
+                      <div className="overflow-x-auto">
+                        {/* Use DataTable for breakdown */}
+                        {/* DataTable expects columns and data */}
+                        <DataTable
+                          columns={[
+                            { key: 'tier', label: 'Tier' },
+                            { key: 'units', label: 'Units', className: 'text-right' },
+                            { key: 'rate', label: 'Rate (%)', className: 'text-right' },
+                            { key: 'amount', label: 'Amount', className: 'text-right' },
+                          ]}
+                          data={payout.breakdown.map((t: any) => ({ ...t, amount: `Rp ${t.amount?.toLocaleString('id-ID') || 0}` }))}
+                          isLoading={false}
+                          getRowId={(r: any) => r.tier}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+    </div>
+  )
+}

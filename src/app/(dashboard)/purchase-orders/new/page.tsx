@@ -1,0 +1,38 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ModuleFormModal } from '@/features/modules/components/module-form-modal'
+import { getModuleRegistry } from '@/config/module-registry'
+import { usePurchaseOrderCreate } from '@/features/purchase-orders'
+
+export default function PurchaseOrderNewPage() {
+  const router = useRouter()
+  const create = usePurchaseOrderCreate()
+  const registry = getModuleRegistry('/purchase-orders')
+  const [open, setOpen] = useState(true)
+
+  if (!registry) return <div>Module not available</div>
+
+  const handleClose = () => {
+    setOpen(false)
+    router.push('/purchase-orders')
+  }
+
+  const handleSubmit = async (body: Record<string, unknown>) => {
+    await create.mutateAsync(body)
+    handleClose()
+  }
+
+  return (
+    <ModuleFormModal
+      open={open}
+      onClose={handleClose}
+      mode="create"
+      registry={registry}
+      onSubmit={handleSubmit}
+      isLoading={create.isLoading}
+      error={null}
+    />
+  )
+}
