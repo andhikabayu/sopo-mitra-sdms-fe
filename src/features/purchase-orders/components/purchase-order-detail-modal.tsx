@@ -44,7 +44,7 @@ export default function PurchaseOrderDetailModal({ open, onClose, data, canAppro
       size="lg"
       footer={
         <div className="flex gap-2">
-          <Button variant="outline" onClick={onClose} disabled={update.isLoading || del.isLoading}>Close</Button>
+          <Button variant="outline" onClick={onClose} disabled={update.isPending || del.isPending}>Close</Button>
           {canApprove && (
             <>
               <Button
@@ -66,11 +66,11 @@ export default function PurchaseOrderDetailModal({ open, onClose, data, canAppro
                     onError: async (err: any) => await Swal.fire({ title: 'Error', text: err?.message ?? 'Failed', icon: 'error' }),
                   })
                 }}
-                disabled={update.isLoading}
+                disabled={update.isPending}
               >
                 Approve
               </Button>
-              <Button variant="destructive" onClick={() => setRejectOpen(true)} disabled={update.isLoading}>Reject</Button>
+              <Button variant="destructive" onClick={() => setRejectOpen(true)} disabled={update.isPending}>Reject</Button>
             </>
           )}
           {/* Super Admin can delete from detail modal */}
@@ -90,7 +90,7 @@ export default function PurchaseOrderDetailModal({ open, onClose, data, canAppro
                   onError: async (err: any) => await Swal.fire({ title: 'Error', text: err?.message ?? 'Failed to delete', icon: 'error' }),
                 })
               }}
-              disabled={del.isLoading}
+              disabled={del.isPending}
             >
               Delete
             </Button>
@@ -109,8 +109,8 @@ export default function PurchaseOrderDetailModal({ open, onClose, data, canAppro
             {data.items?.map((it, idx) => (
               <div key={idx} className="flex justify-between">
                 <div>
-                  <div className="text-sm">Product: {it.product_name ?? it.product_id}</div>
-                  <div className="text-xs text-muted-foreground">Outlet: {it.outlet_name ?? it.outlet_id}</div>
+                  <div className="text-sm">Product: {it.product_id}</div>
+                  <div className="text-xs text-muted-foreground">Outlet: {it.outlet_id}</div>
                 </div>
                 <div className="text-sm">Requested: {it.requested_qty}</div>
               </div>
@@ -122,7 +122,7 @@ export default function PurchaseOrderDetailModal({ open, onClose, data, canAppro
           <div className="space-y-2">
             <FormTextarea label="Admin Notes (reason for rejection)" value={adminNotes} onChange={(e) => setAdminNotes(e.target.value)} />
             <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setRejectOpen(false)} disabled={update.isLoading}>Cancel</Button>
+              <Button variant="outline" onClick={() => setRejectOpen(false)} disabled={update.isPending}>Cancel</Button>
               <Button
                 variant="destructive"
                 onClick={async () => {
@@ -148,7 +148,7 @@ export default function PurchaseOrderDetailModal({ open, onClose, data, canAppro
                     onError: async (err: any) => await Swal.fire({ title: 'Error', text: err?.message ?? 'Failed', icon: 'error' }),
                   })
                 }}
-                disabled={update.isLoading}
+                disabled={update.isPending}
               >
                 Reject Purchase Order
               </Button>

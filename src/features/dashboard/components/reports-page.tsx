@@ -77,9 +77,9 @@ export function ReportsPage(): React.ReactElement {
   useEffect(() => {
     console.log('[ReportsPage] reportType:', reportType)
     console.log('[ReportsPage] currentQuery data:', currentQuery.data)
-    console.log('[ReportsPage] currentQuery isLoading:', currentQuery.isLoading)
+    console.log('[ReportsPage] currentQuery isLoading:', currentQuery.isPending)
     console.log('[ReportsPage] currentQuery error:', currentQuery.error)
-  }, [reportType, currentQuery.data, currentQuery.isLoading, currentQuery.error])
+  }, [reportType, currentQuery.data, currentQuery.isPending, currentQuery.error])
 
   const handleExport = async () => {
     setIsExporting(true)
@@ -152,7 +152,7 @@ export function ReportsPage(): React.ReactElement {
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          {currentQuery.isLoading ? (
+          {currentQuery.isPending ? (
             <>
               <Spinner className="h-4 w-4" />
               <span>Loading…</span>
@@ -183,7 +183,7 @@ export function ReportsPage(): React.ReactElement {
       </div>
 
       {/* Report Content */}
-      {currentQuery.isLoading ? (
+      {currentQuery.isPending ? (
         <div className="flex items-center justify-center h-64 gap-3">
           <Spinner className="h-8 w-8" />
           <p className="text-muted-foreground">Loading report…</p>
@@ -347,7 +347,7 @@ export function ReportsPage(): React.ReactElement {
                         </tr>
                       </thead>
                       <tbody className="divide-y">
-                        {currentQuery.data.store_performance.map((store) => (
+                        {(currentQuery.data as any).store_performance?.map((store: any) => (
                           <tr key={store.outlet_id} className="hover:bg-gray-50">
                             <td className="px-4 py-3 font-medium">{store.outlet_name}</td>
                             <td className="px-4 py-3 text-gray-600">{store.sales_area}</td>
@@ -383,7 +383,7 @@ export function ReportsPage(): React.ReactElement {
                         </tr>
                       </thead>
                       <tbody className="divide-y">
-                        {currentQuery.data.sales_performance.map((sales) => (
+                        {  (currentQuery.data as any).sales_performance?.map((sales: any) => (
                           <tr key={sales.sales_id} className="hover:bg-gray-50">
                             <td className="px-4 py-3 font-medium">{sales.sales_name}</td>
                             <td className="px-4 py-3 text-right">{sales.outlet_count}</td>
@@ -404,12 +404,12 @@ export function ReportsPage(): React.ReactElement {
           )}
 
           {/* Empty State / Debug */}
-          {!currentQuery.isLoading && !currentQuery.error && (
+          {!currentQuery.isPending && !currentQuery.error && (
             <>
               {!currentQuery.data ? (
                 <div className="text-center py-8 rounded-lg border border-gray-200 bg-gray-50">
                   <p className="text-muted-foreground">No data returned from API</p>
-                  <p className="text-xs text-gray-500 mt-2">Data is: {typeof currentQuery.data}</p>
+                  
                 </div>
               ) : Array.isArray(currentQuery.data) && currentQuery.data.length === 0 ? (
                 <div className="text-center py-8 rounded-lg border border-gray-200 bg-gray-50">

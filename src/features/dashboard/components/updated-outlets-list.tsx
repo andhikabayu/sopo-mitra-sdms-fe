@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { FiArrowUpRight, FiBarChart3, FiLoader } from 'react-icons/fi'
+import { FiArrowUpRight, FiBarChart2, FiLoader } from 'react-icons/fi'
 import { formatCurrency, formatNumber, formatPercent } from '@/lib/utils/format'
 import { useDashboardOutlets } from '../hooks/use-dashboard'
 import { useDashboardStore, selectDateRange } from '../stores/dashboard.store'
@@ -46,8 +46,10 @@ export function UpdatedOutletsList(): React.ReactElement {
     )
   }
 
+  const outletRows = outlets.outlets ?? []
+
   // Sort by revenue descending
-  const sortedOutlets = [...outlets].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0))
+  const sortedOutlets = [...outletRows].sort((a, b) => (b.revenue || 0) - (a.revenue || 0))
 
   // Top 5 outlets
   const topOutlets = sortedOutlets.slice(0, 5)
@@ -56,9 +58,9 @@ export function UpdatedOutletsList(): React.ReactElement {
     <section aria-label="Outlets Analytics">
       <div className="mb-4 flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <FiBarChart3 className="h-4 w-4 text-primary" />
+          <FiBarChart2 className="h-4 w-4 text-primary" />
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Outlets ({outlets.length} total)
+            Outlets ({outletRows.length} total)
           </h2>
         </div>
         <DateRangeFilter />
@@ -73,7 +75,7 @@ export function UpdatedOutletsList(): React.ReactElement {
               key={outlet.outlet_id}
               rank={index + 1}
               name={outlet.outlet_name}
-              value={formatCurrency(outlet.total_revenue || 0)}
+              value={formatCurrency(outlet.revenue || 0)}
               metricLabel="Revenue"
               size="sm"
               badge={
@@ -111,13 +113,13 @@ export function UpdatedOutletsList(): React.ReactElement {
                   </td>
                   <td className="px-4 py-3 text-gray-600 text-sm">{outlet.sales_area}</td>
                   <td className="px-4 py-3 text-right font-semibold text-green-600">
-                    {formatCurrency(outlet.total_revenue || 0)}
+                    {formatCurrency(outlet.revenue || 0)}
                   </td>
                   <td className="px-4 py-3 text-right text-gray-700">
-                    {formatNumber(outlet.total_sold || 0)}
+                    {formatNumber(outlet.sold || 0)}
                   </td>
                   <td className="px-4 py-3 text-right text-red-600">
-                    {formatNumber(outlet.total_returned || 0)}
+                    {formatNumber(outlet.returned || 0)}
                   </td>
                   <td className="px-4 py-3 text-right text-gray-700">
                     {formatNumber(outlet.current_stock || 0)}
@@ -150,7 +152,7 @@ export function UpdatedOutletsList(): React.ReactElement {
         </div>
       </div>
 
-      {outlets.length === 0 && (
+      {outletRows.length === 0 && (
         <div className="text-center py-8">
           <p className="text-muted-foreground">No outlets found for the selected date range</p>
         </div>

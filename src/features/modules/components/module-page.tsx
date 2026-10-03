@@ -113,7 +113,7 @@ export function ModulePage({ registry }: ModulePageProps) {
     : undefined
 
   const listQuery = useModuleList(registry, listParams)
-  const isLoading = listQuery.isLoading
+  const isLoading = listQuery.isPending
   const listError = listQuery.error
   const anyListQuery: any = listQuery
   const listData = anyListQuery.data

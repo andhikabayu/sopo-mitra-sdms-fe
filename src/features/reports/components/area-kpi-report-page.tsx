@@ -19,8 +19,8 @@ export function AreaKPIReportPage(): React.ReactElement {
 
   // Fetch area KPI data
   const { data: areas = [], isLoading, isFetching, refetch } = useAreaKPIReport({
-    date_from: dateRange.dateFrom,
-    date_to: dateRange.dateTo,
+    date_from: dateRange.date_from,
+    date_to: dateRange.date_to,
   })
 
   useEffect(() => {
@@ -31,8 +31,8 @@ export function AreaKPIReportPage(): React.ReactElement {
   const handleExport = async () => {
     try {
       await exportAreaKPIReportToExcel({
-        date_from: dateRange.dateFrom,
-        date_to: dateRange.dateTo,
+        date_from: dateRange.date_from,
+        date_to: dateRange.date_to,
       })
     } catch (error) {
       console.error('[AreaKPIReportPage] export error:', error)
@@ -63,8 +63,8 @@ export function AreaKPIReportPage(): React.ReactElement {
       <div className="rounded-lg border bg-card p-4">
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium">
-            Showing data from <span className="font-semibold text-foreground">{dateRange.dateFrom}</span> to{' '}
-            <span className="font-semibold text-foreground">{dateRange.dateTo}</span>
+            Showing data from <span className="font-semibold text-foreground">{dateRange.date_from}</span> to{' '}
+            <span className="font-semibold text-foreground">{dateRange.date_to}</span>
           </p>
           <p className="text-xs text-muted-foreground">
             {areas.length} {areas.length === 1 ? 'area' : 'areas'} found

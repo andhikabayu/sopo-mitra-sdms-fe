@@ -45,14 +45,13 @@ export const transactionsApi = {
       | { items?: TransactionRecord[]; data?: { items?: TransactionRecord[]; metadata?: TransactionListMetadata }; metadata?: TransactionListMetadata }
       | undefined
 
-    const items = Array.isArray(payload)
-      ? payload
-      : payload?.items ?? payload?.data?.items ?? []
+    const nestedPayload = payload && !Array.isArray(payload) && 'data' in payload ? payload.data : undefined
 
-    const metadata =
-      (payload && !Array.isArray(payload) ? payload.metadata : undefined) ??
-      payload?.data?.metadata ??
-      (data as { metadata?: TransactionListMetadata }).metadata
+    const items = Array.isArray(payload) ? payload : payload?.items ?? nestedPayload?.items ?? []
+
+    const metadata = Array.isArray(payload)
+      ? (data as { metadata?: TransactionListMetadata }).metadata
+      : payload?.metadata ?? nestedPayload?.metadata ?? (data as { metadata?: TransactionListMetadata }).metadata
 
     return { items, metadata }
   },

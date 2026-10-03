@@ -33,21 +33,21 @@ export function OutletSalesFilter({
   const { data: salesList, isLoading: salesLoading } = useDashboardSales()
 
   // Filter outlets based on search
-  const filteredOutlets = outlets
+  const filteredOutlets = outlets?.outlets
     ?.filter((outlet) =>
       `${outlet.outlet_name || ''} (${outlet.outlet_id || ''})`.toLowerCase().includes(outletSearch.toLowerCase())
     )
     .slice(0, 10)
 
   // Filter sales based on search
-  const filteredSales = salesList
+  const filteredSales = salesList?.sales_people
     ?.filter((sales) =>
       `${sales.sales_name || ''} (${sales.sales_id || ''})`.toLowerCase().includes(salesSearch.toLowerCase())
     )
     .slice(0, 10)
 
-  const selectedOutletName = outlets?.find((o) => o.outlet_id === selectedOutletId)?.outlet_name
-  const selectedSalesName = salesList?.find((s) => s.sales_id === selectedSalesId)?.sales_name
+  const selectedOutletName = outlets?.outlets?.find((o) => o.outlet_id === selectedOutletId)?.outlet_name
+  const selectedSalesName = salesList?.sales_people?.find((s) => s.sales_id === selectedSalesId)?.sales_name
 
   return (
     <div className="space-y-4 rounded-lg border bg-card p-4">

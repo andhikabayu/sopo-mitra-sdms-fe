@@ -92,9 +92,10 @@ export function OutletKPIReportTable({ outlets, isLoading, onRefresh }: {
   console.log('[OutletKPIReportTable] outlets type:', typeof outlets)
   console.log('[OutletKPIReportTable] outlets is array:', Array.isArray(outlets))
   console.log('[OutletKPIReportTable] outlets length:', outlets.length)
-  if (outlets.length > 0) {
-    console.log('[OutletKPIReportTable] first item keys:', Object.keys(outlets[0]))
-    console.log('[OutletKPIReportTable] first item:', outlets[0])
+  const firstOutlet = outlets[0]
+  if (firstOutlet) {
+    console.log('[OutletKPIReportTable] first item keys:', Object.keys(firstOutlet))
+    console.log('[OutletKPIReportTable] first item:', firstOutlet)
   }
 
   return (
@@ -161,9 +162,10 @@ export function SalesKPIReportTable({ sales, isLoading, onRefresh }: {
   console.log('[SalesKPIReportTable] sales type:', typeof sales)
   console.log('[SalesKPIReportTable] sales is array:', Array.isArray(sales))
   console.log('[SalesKPIReportTable] sales length:', sales.length)
-  if (sales.length > 0) {
-    console.log('[SalesKPIReportTable] first item keys:', Object.keys(sales[0]))
-    console.log('[SalesKPIReportTable] first item:', sales[0])
+  const firstSales = sales[0]
+  if (firstSales) {
+    console.log('[SalesKPIReportTable] first item keys:', Object.keys(firstSales))
+    console.log('[SalesKPIReportTable] first item:', firstSales)
   }
 
   return (

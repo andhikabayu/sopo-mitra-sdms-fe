@@ -28,6 +28,6 @@ export const inventoryPerOutletApi = {
     const { data } = await apiClient.get<ApiEnvelope<PerOutletApiResponse>>(API_ROUTES.inventory.perOutlet, {
       params: { outlet_id: outletId, ...params },
     })
-    return data.data
+    return data.data.data
   },
 }

@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { modulesApi } from '@/features/modules/api/modules.api'
 import { parseApiError } from '@/lib/api/error'
-import { purchaseOrdersApi, type PurchaseOrderApprovalPayload } from '../api/purchase-orders.api'
+import { purchaseOrdersApi, type PurchaseOrderApprovalPayload, type PurchaseOrderCreatePayload } from '../api/purchase-orders.api'
 
 export function usePurchaseOrdersList(params?: Record<string, unknown>, enabled = true) {
   return useQuery({
@@ -26,7 +26,7 @@ export function usePurchaseOrderDetail(id?: number) {
 export function usePurchaseOrderCreate() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (body: Parameters<typeof purchaseOrdersApi.create>[0]) => purchaseOrdersApi.create(body),
+    mutationFn: (body: PurchaseOrderCreatePayload) => purchaseOrdersApi.create(body),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['purchase-orders'] })
       qc.invalidateQueries({ queryKey: ['module', '/purchase-orders'] })

@@ -60,7 +60,6 @@ export type {
   DashboardPerformanceSales,
   DashboardPerformanceSalesOutlet,
   MasterOutlet,
-  DashboardAnalyticsData,
 } from './types/dashboard.types'
 
 // New types

@@ -60,7 +60,9 @@ export function UpdatedSalesList({ onSelectSales }: UpdatedSalesListProps): Reac
     )
   }
 
-  if (!data || data.length === 0) {
+  const salesRows = data?.sales_people ?? []
+
+  if (salesRows.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-muted-foreground">No sales data available</p>
@@ -69,7 +71,7 @@ export function UpdatedSalesList({ onSelectSales }: UpdatedSalesListProps): Reac
   }
 
   // Sort by revenue descending
-  const sortedData = [...data].sort((a, b) => b.total_revenue - a.total_revenue)
+  const sortedData = [...salesRows].sort((a, b) => b.revenue - a.revenue)
   const topSales = sortedData.slice(0, 5)
 
   return (
@@ -94,7 +96,7 @@ export function UpdatedSalesList({ onSelectSales }: UpdatedSalesListProps): Reac
                 <PerformanceRank
                   rank={index + 1}
                   name={sales.sales_name}
-                  value={formatCurrency(sales.total_revenue)}
+                  value={formatCurrency(sales.revenue)}
                   metricLabel="Revenue"
                   size="sm"
                 />
@@ -107,7 +109,7 @@ export function UpdatedSalesList({ onSelectSales }: UpdatedSalesListProps): Reac
 
       {/* Full Sales Table */}
       <section className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-900">All Sales ({data.length})</h3>
+        <h3 className="text-lg font-semibold text-gray-900">All Sales ({salesRows.length})</h3>
         <div className="rounded-lg border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -131,16 +133,16 @@ export function UpdatedSalesList({ onSelectSales }: UpdatedSalesListProps): Reac
                       {sales.sales_name}
                     </td>
                     <td className="px-4 py-3 text-right text-gray-600">
-                      {sales.outlets_count || 0}
+                      {sales.outlet_count || 0}
                     </td>
                     <td className="px-4 py-3 text-right font-semibold text-green-600">
-                      {formatCurrency(sales.total_revenue)}
+                      {formatCurrency(sales.revenue)}
                     </td>
-                    <td className="px-4 py-3 text-right">{formatNumber(sales.total_sold)}</td>
+                    <td className="px-4 py-3 text-right">{formatNumber(sales.sold)}</td>
                     <td className="px-4 py-3 text-right text-red-600">
-                      {formatNumber(sales.total_returned)}
+                      {formatNumber(sales.returned)}
                     </td>
-                    <td className="px-4 py-3 text-right">{formatNumber(sales.current_stock)}</td>
+                    <td className="px-4 py-3 text-right">{formatNumber(sales.supply - sales.sold)}</td>
                     <td className={clsx(
                       'px-4 py-3 text-right font-semibold',
                       sales.efficiency_percent >= 70 ? 'text-green-600' : sales.efficiency_percent >= 50 ? 'text-orange-600' : 'text-red-600'
@@ -149,9 +151,9 @@ export function UpdatedSalesList({ onSelectSales }: UpdatedSalesListProps): Reac
                     </td>
                     <td className={clsx(
                       'px-4 py-3 text-right font-semibold',
-                      sales.return_rate_percent <= 10 ? 'text-green-600' : sales.return_rate_percent <= 20 ? 'text-orange-600' : 'text-red-600'
+                      (sales.return_rate_percent ?? 0) <= 10 ? 'text-green-600' : (sales.return_rate_percent ?? 0) <= 20 ? 'text-orange-600' : 'text-red-600'
                     )}>
-                      {formatPercent(sales.return_rate_percent)}
+                      {formatPercent(sales.return_rate_percent ?? 0)}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button

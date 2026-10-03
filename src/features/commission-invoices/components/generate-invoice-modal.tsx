@@ -75,8 +75,8 @@ export function GenerateInvoiceModal({ open, onClose }: { open: boolean; onClose
           <Button type="button" variant="ghost" onClick={onClose} className="mr-2">
             Cancel
           </Button>
-          <Button type="submit" disabled={gen.isLoading}>
-            {gen.isLoading ? 'Generating...' : 'Generate'}
+          <Button type="submit" disabled={gen.isPending}>
+            {gen.isPending ? 'Generating...' : 'Generate'}
           </Button>
         </div>
       </form>

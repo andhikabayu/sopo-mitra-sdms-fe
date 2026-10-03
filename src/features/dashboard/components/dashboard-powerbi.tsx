@@ -82,7 +82,7 @@ export function DashboardPowerBi() {
   const outletDetailQ = useDashboardOutletDetail(selectedOutletId || undefined, dateRange)
   const salesDetailQ = useDashboardSalesDetail(selectedSalesId || undefined, dateRange)
 
-  const isLoading = [summaryQ, outletsQ, productsQ, salesQ, areasQ, trendQ].some((q) => q.isLoading)
+  const isLoading = [summaryQ, outletsQ, productsQ, salesQ, areasQ, trendQ].some((q) => q.isPending)
   const isError = [summaryQ, outletsQ, productsQ, salesQ, areasQ, trendQ].some((q) => q.isError)
   const isFetching = [summaryQ, outletsQ, productsQ, salesQ, areasQ, trendQ].some((q) => q.isFetching)
 
@@ -124,7 +124,7 @@ export function DashboardPowerBi() {
     if (!trendQ.data?.data || !Array.isArray(trendQ.data.data)) return []
     return trendQ.data.data.map((item) => ({
       date: item.date,
-      revenue: Object.values(item).reduce((sum, val) => {
+      revenue: Object.values(item).reduce((sum: number, val) => {
         if (typeof val === 'number') return sum + val
         return sum
       }, 0),
@@ -275,7 +275,7 @@ export function DashboardPowerBi() {
             </Button>
           </div>
 
-          {outletDetailQ.isLoading ? (
+          {outletDetailQ.isPending ? (
             <div className="flex justify-center py-8">
               <Spinner className="h-6 w-6 text-primary" />
             </div>
@@ -420,7 +420,7 @@ export function DashboardPowerBi() {
             </Button>
           </div>
 
-          {salesDetailQ.isLoading ? (
+          {salesDetailQ.isPending ? (
             <div className="flex justify-center py-8">
               <Spinner className="h-6 w-6 text-green-600" />
             </div>
@@ -581,7 +581,7 @@ export function DashboardPowerBi() {
               label="Avg Rev/Outlet"
               value={formatCurrency(summaryQ.data.avg_revenue_per_outlet ?? 0)}
               icon={FiShoppingBag}
-              accent="info"
+              accent="primary"
             />
           </div>
         </section>

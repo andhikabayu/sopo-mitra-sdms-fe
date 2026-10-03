@@ -174,7 +174,7 @@ export function CommissionInvoiceDetailModal({ open, onClose, invoiceId }: { ope
             title="Mark invoice as paid"
             description="Are you sure you want to mark this invoice as paid?"
             confirmLabel="Pay"
-            isLoading={payMut.isLoading}
+            isLoading={payMut.isPending}
           />
         </div>
       )}

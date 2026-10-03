@@ -22,9 +22,10 @@ export function TransactionReportTable({ transactions, isLoading, onRefresh }: {
   console.log('[TransactionReportTable] transactions type:', typeof transactions)
   console.log('[TransactionReportTable] transactions is array:', Array.isArray(transactions))
   console.log('[TransactionReportTable] transactions length:', transactions.length)
-  if (transactions.length > 0) {
-    console.log('[TransactionReportTable] first item keys:', Object.keys(transactions[0]))
-    console.log('[TransactionReportTable] first item:', transactions[0])
+  const firstTransaction = transactions[0]
+  if (firstTransaction) {
+    console.log('[TransactionReportTable] first item keys:', Object.keys(firstTransaction))
+    console.log('[TransactionReportTable] first item:', firstTransaction)
   }
 
   return (
@@ -93,9 +94,10 @@ export function SuppliesReportTable({ supplies, isLoading, onRefresh }: {
   console.log('[SuppliesReportTable] supplies type:', typeof supplies)
   console.log('[SuppliesReportTable] supplies is array:', Array.isArray(supplies))
   console.log('[SuppliesReportTable] supplies length:', supplies.length)
-  if (supplies.length > 0) {
-    console.log('[SuppliesReportTable] first item keys:', Object.keys(supplies[0]))
-    console.log('[SuppliesReportTable] first item:', supplies[0])
+  const firstSupply = supplies[0]
+  if (firstSupply) {
+    console.log('[SuppliesReportTable] first item keys:', Object.keys(firstSupply))
+    console.log('[SuppliesReportTable] first item:', firstSupply)
   }
 
   return (
@@ -161,9 +163,10 @@ export function ReturnsReportTable({ returns, isLoading, onRefresh }: {
   console.log('[ReturnsReportTable] returns type:', typeof returns)
   console.log('[ReturnsReportTable] returns is array:', Array.isArray(returns))
   console.log('[ReturnsReportTable] returns length:', returns.length)
-  if (returns.length > 0) {
-    console.log('[ReturnsReportTable] first item keys:', Object.keys(returns[0]))
-    console.log('[ReturnsReportTable] first item:', returns[0])
+  const firstReturn = returns[0]
+  if (firstReturn) {
+    console.log('[ReturnsReportTable] first item keys:', Object.keys(firstReturn))
+    console.log('[ReturnsReportTable] first item:', firstReturn)
   }
 
   return (

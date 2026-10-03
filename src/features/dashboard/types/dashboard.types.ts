@@ -30,7 +30,7 @@ export interface DashboardOutlet {
 }
 
 /** GET /dashboard/outlets - full response */
-export interface DashboardOutletKpi extends DashboardOutlet {}
+export type DashboardOutletKpi = DashboardOutlet
 
 export interface DashboardOutletsResponse {
   outlets: DashboardOutlet[]
@@ -65,7 +65,7 @@ export interface DashboardProductsResponse {
   slow_movers: DashboardProduct[]
 }
 
-export interface DashboardProductKpi extends DashboardProduct {}
+export type DashboardProductKpi = DashboardProduct
 
 /** GET /dashboard/sales - single sales person */
 export interface DashboardSalesPerson {
@@ -91,7 +91,7 @@ export interface DashboardSalesResponse {
   top_performers: DashboardSalesPerson[]
 }
 
-export interface DashboardSalesKpi extends DashboardSalesPerson {}
+export type DashboardSalesKpi = DashboardSalesPerson
 
 /** GET /dashboard/areas - single area */
 export interface DashboardArea {
@@ -116,7 +116,7 @@ export interface DashboardAreasResponse {
   top_by_revenue: DashboardArea[]
 }
 
-export interface DashboardAreaKpi extends DashboardArea {}
+export type DashboardAreaKpi = DashboardArea
 
 /** GET /dashboard/analytics/revenue-trend */
 export interface RevenueTrendDataPoint {
@@ -279,6 +279,7 @@ export interface OutletBreakdown {
   total_sold?: number
   revenue?: number
   total_revenue?: number
+  current_stock?: number
   efficiency_percent: number
   return_rate_percent?: number
 }

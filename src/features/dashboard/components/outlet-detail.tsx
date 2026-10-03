@@ -157,7 +157,7 @@ export function OutletDetail({ outletId, onBack }: OutletDetailProps): React.Rea
               <PerformanceRank
                 key={product.product_id}
                 rank={index + 1}
-                name={product.name}
+                name={product.name || 'Unknown Product'}
                 value={formatCurrency(product.total_revenue || 0)}
                 metricLabel="Revenue"
                 size="sm"

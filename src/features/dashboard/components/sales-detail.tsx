@@ -110,7 +110,7 @@ export function SalesDetail({ salesId, onBack }: SalesDetailProps): React.ReactE
                   <h1 className="text-2xl font-bold text-gray-900">{data.sales_name}</h1>
                   <div className="flex items-center gap-2 text-gray-600 text-sm mt-1">
                     <FiMapPin className="h-4 w-4" />
-                    <span>{data.outlets_count} outlets</span>
+                    <span>{data.outlet_count} outlets</span>
                   </div>
                 </div>
               </div>
@@ -139,12 +139,6 @@ export function SalesDetail({ salesId, onBack }: SalesDetailProps): React.ReactE
             value={formatNumber(data.total_sold)}
             unit="units"
             icon="📦"
-          />
-          <MetricCard
-            label="Current Stock"
-            value={formatNumber(data.current_stock)}
-            unit="units"
-            icon="🏭"
           />
           <MetricCard
             label="Total Supply"
@@ -202,7 +196,7 @@ export function SalesDetail({ salesId, onBack }: SalesDetailProps): React.ReactE
                 key={outlet.outlet_id}
                 rank={index + 1}
                 name={outlet.outlet_name}
-                value={formatCurrency(outlet.outlet_revenue)}
+                value={formatCurrency(outlet.revenue || outlet.total_revenue)}
                 metricLabel="Revenue"
                 size="md"
               />
@@ -241,7 +235,7 @@ export function SalesDetail({ salesId, onBack }: SalesDetailProps): React.ReactE
                       <td className="px-4 py-3 text-right text-red-600">
                         {formatNumber(outlet.total_returned)}
                       </td>
-                      <td className="px-4 py-3 text-right">{formatNumber(outlet.current_stock)}</td>
+                      <td className="px-4 py-3 text-right">{formatNumber(outlet.current_stock ?? outlet.total_supply ?? 0)}</td>
                       <td className="px-4 py-3 text-right font-semibold text-green-600">
                         {formatCurrency(outlet.total_revenue)}
                       </td>
@@ -253,9 +247,9 @@ export function SalesDetail({ salesId, onBack }: SalesDetailProps): React.ReactE
                       </td>
                       <td className={clsx(
                         'px-4 py-3 text-right font-semibold',
-                        outlet.return_rate_percent <= 10 ? 'text-green-600' : outlet.return_rate_percent <= 20 ? 'text-orange-600' : 'text-red-600'
+                        (outlet.return_rate_percent ?? 0) <= 10 ? 'text-green-600' : (outlet.return_rate_percent ?? 0) <= 20 ? 'text-orange-600' : 'text-red-600'
                       )}>
-                        {formatPercent(outlet.return_rate_percent)}
+                        {formatPercent(outlet.return_rate_percent ?? 0)}
                       </td>
                     </tr>
                   ))}

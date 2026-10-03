@@ -9,7 +9,6 @@ import type {
   DashboardPerformanceOutlet,
   DashboardPerformanceSales,
   DashboardProductKpi,
-  DashboardProductRankItem,
   DashboardSalesKpi,
 } from '../types/dashboard.types'
 
@@ -60,10 +59,10 @@ export function OutletsDataTable({ outlets }: { outlets: DashboardOutletKpi[] })
         columns={[
           { key: 'outlet_name', label: 'Outlet' },
           { key: 'sales_area', label: 'Sales Area' },
-          { key: 'total_supply', label: 'Supply' },
-          { key: 'total_returned', label: 'Returned' },
-          { key: 'total_sold', label: 'Sold' },
-          { key: 'total_revenue', label: 'Revenue' },
+          { key: 'supply', label: 'Supply' },
+          { key: 'returned', label: 'Returned' },
+          { key: 'sold', label: 'Sold' },
+          { key: 'revenue', label: 'Revenue' },
           { key: 'current_stock', label: 'Stock' },
           { key: 'efficiency_percent', label: 'Efficiency %' },
           { key: 'return_rate_percent', label: 'Return Rate %' },
@@ -74,12 +73,12 @@ export function OutletsDataTable({ outlets }: { outlets: DashboardOutletKpi[] })
             ...row,
             outlet_name: row.outlet_name,
             sales_area: row.sales_area,
-            total_supply: formatNumber(row.total_supply || row.supply),
-            total_returned: formatNumber(row.total_returned || row.retur),
-            total_sold: formatNumber(row.total_sold || row.actual_sales),
-            total_revenue: formatCurrency(row.total_revenue || row.revenue),
-            current_stock: formatNumber(row.current_stock || row.stock),
-            efficiency_percent: formatPercent(row.efficiency_percent || row.sell_through),
+            supply: formatNumber(row.supply),
+            returned: formatNumber(row.returned),
+            sold: formatNumber(row.sold),
+            revenue: formatCurrency(row.revenue),
+            current_stock: formatNumber(row.current_stock),
+            efficiency_percent: formatPercent(row.efficiency_percent),
             return_rate_percent: formatPercent(row.return_rate_percent),
           }
         })}
@@ -115,11 +114,11 @@ export function ProductsDataTable({ products }: { products: DashboardProductKpi[
             sku: row.sku,
             name: row.name,
             category: row.category,
-            total_supply: formatNumber(row.total_supply || row.supply),
-            total_returned: formatNumber(row.total_returned || row.retur),
-            total_sold: formatNumber(row.total_sold || row.actual_sales),
-            total_revenue: formatCurrency(row.total_revenue || row.revenue),
-            efficiency_percent: formatPercent(row.efficiency_percent || row.sell_through),
+            supply: formatNumber(row.supply),
+            returned: formatNumber(row.returned),
+            sold: formatNumber(row.sold),
+            revenue: formatCurrency(row.revenue),
+            efficiency_percent: formatPercent(row.efficiency_percent),
           }
         })}
         isLoading={false}
@@ -133,19 +132,19 @@ export function ProductRankingTables({
   bestSeller,
   slowMoving,
 }: {
-  bestSeller: DashboardProductRankItem[]
-  slowMoving: DashboardProductRankItem[]
+  bestSeller: DashboardProductKpi[]
+  slowMoving: DashboardProductKpi[]
 }) {
   console.log('[ProductRankingTables] bestSeller:', bestSeller, 'slowMoving:', slowMoving)
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <DataTableSection title="Best Seller" description="best_seller from GET /dashboard/products">
         <DataTable
-          columns={[{ key: 'name', label: 'Product' }, { key: 'total_sold', label: 'Sold' }]}
+          columns={[{ key: 'name', label: 'Product' }, { key: 'sold', label: 'Sold' }]}
           data={bestSeller.map((row) => ({
             ...row,
             name: row.name,
-            total_sold: formatNumber(row.total_sold || row.actual_sales),
+            sold: formatNumber(row.sold),
           }))}
           isLoading={false}
           getRowId={(r: any) => r.product_id}
@@ -154,11 +153,11 @@ export function ProductRankingTables({
 
       <DataTableSection title="Slow Moving" description="slow_moving from GET /dashboard/products">
         <DataTable
-          columns={[{ key: 'name', label: 'Product' }, { key: 'total_sold', label: 'Sold' }]}
+          columns={[{ key: 'name', label: 'Product' }, { key: 'sold', label: 'Sold' }]}
           data={slowMoving.map((row) => ({
             ...row,
             name: row.name,
-            total_sold: formatNumber(row.total_sold || row.actual_sales),
+            sold: formatNumber(row.sold),
           }))}
           isLoading={false}
           getRowId={(r: any) => r.product_id}
@@ -176,7 +175,7 @@ export function SalesDataTable({ sales }: { sales: DashboardSalesKpi[] }) {
         columns={[
           { key: 'sales_name', label: 'Sales' },
           { key: 'supply', label: 'Supply' },
-          { key: 'retur', label: 'Returned' },
+          { key: 'returned', label: 'Returned' },
           { key: 'revenue', label: 'Revenue' },
         ]}
         data={sales.map((row) => {
@@ -185,7 +184,7 @@ export function SalesDataTable({ sales }: { sales: DashboardSalesKpi[] }) {
             ...row,
             sales_name: row.sales_name,
             supply: formatNumber(row.supply),
-            retur: formatNumber(row.retur),
+            returned: formatNumber(row.returned),
             revenue: formatCurrency(row.revenue),
           }
         })}
@@ -202,10 +201,10 @@ export function AreasDataTable({ areas }: { areas: DashboardAreaKpi[] }) {
     <DataTableSection title="Area KPI Details" description="Full response from GET /dashboard/areas">
       <DataTable
         columns={[
-          { key: 'area', label: 'Area' },
-          { key: 'total_supply', label: 'Supply' },
-          { key: 'total_sold', label: 'Sold' },
-          { key: 'total_revenue', label: 'Revenue' },
+          { key: 'area_name', label: 'Area' },
+          { key: 'supply', label: 'Supply' },
+          { key: 'sold', label: 'Sold' },
+          { key: 'revenue', label: 'Revenue' },
           { key: 'efficiency_percent', label: 'Efficiency %' },
           { key: 'return_rate_percent', label: 'Return Rate %' },
         ]}
@@ -213,16 +212,16 @@ export function AreasDataTable({ areas }: { areas: DashboardAreaKpi[] }) {
           console.log('[AreasDataTable] mapping row:', row)
           return {
             ...row,
-            area: row.area,
-            total_supply: formatNumber(row.total_supply || row.supply),
-            total_sold: formatNumber(row.total_sold || row.actual_sales),
-            total_revenue: formatCurrency(row.total_revenue || row.revenue),
-            efficiency_percent: formatPercent(row.efficiency_percent || row.sell_through),
+            area_name: row.area_name,
+            supply: formatNumber(row.supply),
+            sold: formatNumber(row.sold),
+            revenue: formatCurrency(row.revenue),
+            efficiency_percent: formatPercent(row.efficiency_percent),
             return_rate_percent: formatPercent(row.return_rate_percent),
           }
         })}
         isLoading={false}
-        getRowId={(r: any) => r.area}
+        getRowId={(r: any) => r.area_id}
       />
     </DataTableSection>
   )

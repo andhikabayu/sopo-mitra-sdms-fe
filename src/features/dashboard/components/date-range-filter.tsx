@@ -37,34 +37,34 @@ export function DateRangeFilter(): React.ReactElement {
   const presets: DatePreset[] = [
     {
       label: 'Last 7 days',
-      getDates: () => {
+      getDates: (): { from: string; to: string } => {
         const from = new Date(today)
         from.setDate(from.getDate() - 7)
         return {
-          from: from.toISOString().split('T')[0],
-          to: today.toISOString().split('T')[0],
+          from: from.toISOString().split('T')[0]!,
+          to: today.toISOString().split('T')[0]!,
         }
       },
     },
     {
       label: 'Last 30 days',
-      getDates: () => {
+      getDates: (): { from: string; to: string } => {
         const from = new Date(today)
         from.setDate(from.getDate() - 30)
         return {
-          from: from.toISOString().split('T')[0],
-          to: today.toISOString().split('T')[0],
+          from: from.toISOString().split('T')[0]!,
+          to: today.toISOString().split('T')[0]!,
         }
       },
     },
     {
       label: 'Last 90 days',
-      getDates: () => {
+      getDates: (): { from: string; to: string } => {
         const from = new Date(today)
         from.setDate(from.getDate() - 90)
         return {
-          from: from.toISOString().split('T')[0],
-          to: today.toISOString().split('T')[0],
+          from: from.toISOString().split('T')[0]!,
+          to: today.toISOString().split('T')[0]!,
         }
       },
     },

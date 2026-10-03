@@ -18,7 +18,6 @@ import type {
   DashboardPerformanceOutlet,
   DashboardPerformanceSales,
   DashboardProductKpi,
-  DashboardProductRankItem,
   DashboardSalesKpi,
   DashboardSummary,
 } from '../types/dashboard.types'
@@ -55,11 +54,11 @@ function getMaxForKeys(data: Record<string, unknown>[], keys: string[]): number 
 
 export const CHART_COLORS = {
   supply: 'hsl(221, 83%, 53%)',
-  retur: 'hsl(0, 72%, 51%)',
-  actualSales: 'hsl(142, 71%, 45%)',
+  returned: 'hsl(0, 72%, 51%)',
+  sold: 'hsl(142, 71%, 45%)',
   revenue: 'hsl(262, 83%, 58%)',
-  stock: 'hsl(38, 92%, 50%)',
-  sellThrough: 'hsl(199, 89%, 48%)',
+  current_stock: 'hsl(38, 92%, 50%)',
+  efficiency_percent: 'hsl(199, 89%, 48%)',
   bestSeller: 'hsl(142, 71%, 45%)',
   slowMoving: 'hsl(38, 92%, 50%)',
 } as const
@@ -131,13 +130,13 @@ export function OperationsOverviewChart({ summary }: { summary: DashboardSummary
     {
       name: 'Overview',
       Supply: summary.total_supply,
-      Retur: summary.total_retur,
-      'Actual Sales': summary.total_actual_sales,
-      Stock: summary.total_stock,
+      Retur: summary.total_returned,
+      'Sold': summary.total_sold,
+      Stock: summary.current_stock,
     },
   ]
 
-  const maxVal = getMaxForKeys(data, ['Supply', 'Retur', 'Actual Sales', 'Stock'])
+  const maxVal = getMaxForKeys(data, ['Supply', 'Retur', 'Sold', 'Stock'])
 
   return (
     <ChartCard
@@ -162,9 +161,9 @@ export function OperationsOverviewChart({ summary }: { summary: DashboardSummary
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Bar dataKey="Supply" fill={CHART_COLORS.supply} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Retur" fill={CHART_COLORS.retur} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Actual Sales" fill={CHART_COLORS.actualSales} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Stock" fill={CHART_COLORS.stock} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="returned" fill={CHART_COLORS.returned} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Sold" fill={CHART_COLORS.sold} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="current_stock" fill={CHART_COLORS.current_stock} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -175,9 +174,9 @@ export function OperationsOverviewChart({ summary }: { summary: DashboardSummary
 export function SupplyFlowChart({ summary }: { summary: DashboardSummary }) {
   const data = [
     { stage: 'Supply', value: summary.total_supply, fill: CHART_COLORS.supply },
-    { stage: 'Retur', value: summary.total_retur, fill: CHART_COLORS.retur },
-    { stage: 'Actual Sales', value: summary.total_actual_sales, fill: CHART_COLORS.actualSales },
-    { stage: 'Remaining Stock', value: summary.total_stock, fill: CHART_COLORS.stock },
+    { stage: 'Retur', value: summary.total_returned, fill: CHART_COLORS.returned },
+    { stage: 'Sold', value: summary.total_sold, fill: CHART_COLORS.sold },
+    { stage: 'Remaining Stock', value: summary.current_stock, fill: CHART_COLORS.current_stock },
   ]
 
   const maxVal = getMaxForKeys(data, ['value'])
@@ -185,7 +184,7 @@ export function SupplyFlowChart({ summary }: { summary: DashboardSummary }) {
   return (
     <ChartCard
       title="Supply Flow Pipeline"
-      description={`Sell-through ${formatPercent(summary.sell_through)} · Revenue ${formatCurrency(summary.total_revenue)}`}
+      description={`Sell-through ${formatPercent(summary.efficiency_percent)} · Revenue ${formatCurrency(summary.total_revenue)}`}
     >
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
@@ -208,17 +207,17 @@ export function SupplyFlowChart({ summary }: { summary: DashboardSummary }) {
 
 export function AreaPerformanceChart({ areas }: { areas: DashboardAreaKpi[] }) {
   const data = areas.map((area) => ({
-    area: truncateLabel(area.area, 14),
-    fullName: area.area,
+    area: truncateLabel(area.area_name, 14),
+    fullName: area.area_name,
     Revenue: area.revenue,
-    'Actual Sales': area.actual_sales,
+    'Sold': area.sold,
     Supply: area.supply,
-    'Sell Through': area.sell_through,
+    'Sell Through': area.efficiency_percent,
   }))
 
   // Compute separate max values for quantity metrics vs revenue
   const revenueValues = data.map(item => item.Revenue as number);
-  const qtyValues = data.flatMap(item => [item['Actual Sales'] as number, item.Supply as number]);
+  const qtyValues = data.flatMap(item => [item['Sold'] as number, item.Supply as number]);
   const maxRevenue = Math.max(...revenueValues, 1);
   const maxQty = Math.max(...qtyValues, 1);
 
@@ -261,10 +260,10 @@ export function AreaPerformanceChart({ areas }: { areas: DashboardAreaKpi[] }) {
               }}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Bar yAxisId="left" dataKey="Actual Sales" fill={CHART_COLORS.actualSales} radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="left" dataKey="Sold" fill={CHART_COLORS.sold} radius={[4, 4, 0, 0]} />
             <Bar yAxisId="left" dataKey="Supply" fill={CHART_COLORS.supply} radius={[4, 4, 0, 0]} />
             <Bar yAxisId="right" dataKey="Revenue" fill={CHART_COLORS.revenue} radius={[4, 4, 0, 0]} />
-            <Bar yAxisId="left" dataKey="Sell Through" fill={CHART_COLORS.sellThrough} radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="left" dataKey="efficiency_percent" fill={CHART_COLORS.efficiency_percent} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -279,15 +278,15 @@ export function OutletPerformanceChart({ outlets }: { outlets: DashboardOutletKp
     fullName: outlet.outlet_name,
     area: outlet.sales_area,
     Revenue: outlet.revenue,
-    'Actual Sales': outlet.actual_sales,
+    'Sold': outlet.sold,
     Supply: outlet.supply,
-    Retur: outlet.retur,
+    Retur: outlet.returned,
   }))
 
   // Compute separate max values for quantity metrics vs revenue
   const revenueValues = data.map(item => item.Revenue as number);
   const qtyValues = data.flatMap(item => [
-    item['Actual Sales'] as number,
+    item['Sold'] as number,
     item.Supply as number,
     item.Retur as number,
   ]);
@@ -333,9 +332,9 @@ export function OutletPerformanceChart({ outlets }: { outlets: DashboardOutletKp
               }}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Bar xAxisId="left" dataKey="Actual Sales" fill={CHART_COLORS.actualSales} radius={[0, 4, 4, 0]} />
+            <Bar xAxisId="left" dataKey="Sold" fill={CHART_COLORS.sold} radius={[0, 4, 4, 0]} />
             <Bar xAxisId="left" dataKey="Supply" fill={CHART_COLORS.supply} radius={[0, 4, 4, 0]} />
-            <Bar xAxisId="left" dataKey="Retur" fill={CHART_COLORS.retur} radius={[0, 4, 4, 0]} />
+            <Bar xAxisId="left" dataKey="returned" fill={CHART_COLORS.returned} radius={[0, 4, 4, 0]} />
             <Bar xAxisId="right" dataKey="Revenue" fill={CHART_COLORS.revenue} radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
@@ -345,19 +344,19 @@ export function OutletPerformanceChart({ outlets }: { outlets: DashboardOutletKp
 }
 
 export function ProductSalesChart({ products }: { products: DashboardProductKpi[] }) {
-  const sorted = [...products].sort((a, b) => b.actual_sales - a.actual_sales)
+  const sorted = [...products].sort((a, b) => b.sold - a.sold)
   const data = sorted.map((product) => ({
     product: truncateLabel(product.name, 14),
     fullName: product.name,
     sku: product.sku,
-    'Actual Sales': product.actual_sales,
+    'Sold': product.sold,
     Revenue: product.revenue,
-    'Sell Through': product.sell_through,
+    'Sell Through': product.efficiency_percent,
   }))
 
   // Compute separate max values for quantity metrics vs revenue
   const revenueValues = data.map(item => item.Revenue as number);
-  const qtyValues = data.map(item => item['Actual Sales'] as number);
+  const qtyValues = data.map(item => item['Sold'] as number);
   const maxRevenue = Math.max(...revenueValues, 1);
   const maxQty = Math.max(...qtyValues, 1);
 
@@ -400,7 +399,7 @@ export function ProductSalesChart({ products }: { products: DashboardProductKpi[
               }}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Bar yAxisId="left" dataKey="Actual Sales" fill={CHART_COLORS.actualSales} radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="left" dataKey="Sold" fill={CHART_COLORS.sold} radius={[4, 4, 0, 0]} />
             <Bar yAxisId="right" dataKey="Revenue" fill={CHART_COLORS.revenue} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
@@ -413,24 +412,24 @@ export function BestSlowProductsChart({
   bestSeller,
   slowMoving,
 }: {
-  bestSeller: DashboardProductRankItem[]
-  slowMoving: DashboardProductRankItem[]
+  bestSeller: DashboardProductKpi[]
+  slowMoving: DashboardProductKpi[]
 }) {
   const bestData = bestSeller.map((item) => ({
     name: truncateLabel(item.name, 18),
     fullName: item.name,
-    'Actual Sales': item.actual_sales,
+    'Sold': item.sold,
     type: 'Best Seller',
   }))
   const slowData = slowMoving.map((item) => ({
     name: truncateLabel(item.name, 18),
     fullName: item.name,
-    'Actual Sales': item.actual_sales,
+    'Sold': item.sold,
     type: 'Slow Moving',
   }))
   const data = [...bestData, ...slowData]
 
-  const maxVal = getMaxForKeys(data, ['Actual Sales'])
+  const maxVal = getMaxForKeys(data, ['Sold'])
 
   return (
     <ChartCard
@@ -450,7 +449,7 @@ export function BestSlowProductsChart({
                 return item ? `${item.fullName} — ${item.type}` : ''
               }}
             />
-            <Bar dataKey="Actual Sales" radius={[0, 4, 4, 0]}>
+            <Bar dataKey="Sold" radius={[0, 4, 4, 0]}>
               {data.map((entry) => (
                 <Cell
                   key={`${entry.fullName}-${entry.type}`}
@@ -471,7 +470,7 @@ export function SalesTeamChart({ sales }: { sales: DashboardSalesKpi[] }) {
     fullName: item.sales_name,
     Revenue: item.revenue,
     Supply: item.supply,
-    Retur: item.retur,
+    Retur: item.returned,
   }))
 
   // Compute separate max values for quantity metrics vs revenue
@@ -518,7 +517,7 @@ export function SalesTeamChart({ sales }: { sales: DashboardSalesKpi[] }) {
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Bar yAxisId="left" dataKey="Supply" fill={CHART_COLORS.supply} radius={[4, 4, 0, 0]} />
-            <Bar yAxisId="left" dataKey="Retur" fill={CHART_COLORS.retur} radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="left" dataKey="returned" fill={CHART_COLORS.returned} radius={[4, 4, 0, 0]} />
             <Bar yAxisId="right" dataKey="Revenue" fill={CHART_COLORS.revenue} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
@@ -529,12 +528,12 @@ export function SalesTeamChart({ sales }: { sales: DashboardSalesKpi[] }) {
 
 export function SellThroughByOutletChart({ outlets }: { outlets: DashboardOutletKpi[] }) {
   const data = [...outlets]
-    .sort((a, b) => b.sell_through - a.sell_through)
+    .sort((a, b) => b.efficiency_percent - a.efficiency_percent)
     .slice(0, 10)
     .map((outlet) => ({
       outlet: truncateLabel(outlet.outlet_name, 12),
       fullName: outlet.outlet_name,
-      'Sell Through': outlet.sell_through,
+      'Sell Through': outlet.efficiency_percent,
     }))
 
   // Compute max sell through value for dynamic domain
@@ -561,7 +560,7 @@ export function SellThroughByOutletChart({ outlets }: { outlets: DashboardOutlet
                 return item?.fullName ?? ''
               }}
             />
-            <Bar dataKey="Sell Through" fill={CHART_COLORS.sellThrough} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="efficiency_percent" fill={CHART_COLORS.efficiency_percent} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -625,7 +624,7 @@ export function PerformanceOutletSoldChart({ outlets }: { outlets: DashboardPerf
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Bar
               dataKey="Sold Qty"
-              fill={CHART_COLORS.actualSales}
+              fill={CHART_COLORS.sold}
               radius={[0, 4, 4, 0]}
             />
             <Bar
@@ -689,10 +688,10 @@ export function PerformanceSalesChart({ sales }: { sales: DashboardPerformanceSa
               }}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Bar yAxisId="left" dataKey="Sold Qty" fill={CHART_COLORS.actualSales} radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="left" dataKey="Sold Qty" fill={CHART_COLORS.sold} radius={[4, 4, 0, 0]} />
             <Bar yAxisId="left" dataKey="Revenue" fill={CHART_COLORS.revenue} radius={[4, 4, 0, 0]} />
             <Bar yAxisId="left" dataKey="Outlets" fill={CHART_COLORS.supply} radius={[4, 4, 0, 0]} />
-            <Bar yAxisId="right" dataKey="Sell Through" fill={CHART_COLORS.sellThrough} radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="right" dataKey="efficiency_percent" fill={CHART_COLORS.efficiency_percent} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -5,12 +5,12 @@ import { subscribeWithSelector } from 'zustand/middleware'
 function getDateFrom90DaysAgo(): string {
   const date = new Date()
   date.setDate(date.getDate() - 90)
-  return date.toISOString().split('T')[0]
+  return date.toISOString().split('T')[0]!
 }
 
 /** Get today's date in YYYY-MM-DD format */
 function getTodayDate(): string {
-  return new Date().toISOString().split('T')[0]
+  return new Date().toISOString().split('T')[0]!
 }
 
 export interface DashboardStore {

@@ -17,6 +17,11 @@ export interface PurchaseOrderApprovalItem {
   approved_qty: number
 }
 
+export interface PurchaseOrderCreatePayload {
+  notes: string
+  items: PurchaseOrderItem[]
+}
+
 export interface PurchaseOrderApprovalPayload {
   status: 'approved' | 'rejected'
   admin_notes?: string
@@ -35,7 +40,7 @@ export interface PurchaseOrder {
 }
 
 const realApi = {
-  async create(body: Partial<PurchaseOrder> & { items: PurchaseOrderItem[] }): Promise<PurchaseOrder> {
+  async create(body: PurchaseOrderCreatePayload): Promise<PurchaseOrder> {
     const { data } = await apiClient.post<ApiEnvelope<PurchaseOrder>>(API_ROUTES.purchaseOrders.base, body)
     return data.data
   },
@@ -66,4 +71,4 @@ const realApi = {
   },
 }
 
-export const purchaseOrdersApi = env.NEXT_PUBLIC_ENABLE_MOCK_AUTH ? mockPurchaseOrdersApi : realApi
+export const purchaseOrdersApi = (env.NEXT_PUBLIC_ENABLE_MOCK_AUTH ? mockPurchaseOrdersApi : realApi) as typeof realApi
